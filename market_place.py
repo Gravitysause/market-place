@@ -2,7 +2,7 @@ import discord
 import os
 import dotenv
 
-import dataBase
+import data_base
 
 dotenv.load_dotenv()
 
@@ -22,13 +22,13 @@ class MarketPlace(discord.Client):
 
         # creates account
         elif message.content.startswith("$create"):
-            dataBase.createAccount(message.author.id)
+            data_base.createAccount(message.author.id)
 
             await message.channel.send(f"Creating an account for {message.author}")
 
         # prints ballence
         elif message.content.startswith("$view"):
-            balance = dataBase.viewBalance(message.author.id)
+            balance = data_base.viewBalance(message.author.id)
 
             if balance == None:
                 await message.channel.send(f"{message.author} doesn't have an account. \n to create an account, use $create")
@@ -37,10 +37,9 @@ class MarketPlace(discord.Client):
                 await message.channel.send(f"{message.author} has ${balance}")
 
 
-if __name__ == "__main__":
-    try:
-        discordClient = MarketPlace()
-        discordClient.run(token)
+try:
+    discordClient = MarketPlace()
+    discordClient.run(token)
 
-    except:
-        print("Invalid Bot Token")
+except:
+    print("Invalid Bot Token")
