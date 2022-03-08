@@ -19,14 +19,14 @@ def createAccount(ID):
 
     user = {
         "discordID": ID,
-        "ballence": 100
+        "balance": 100
     }
     
     collection.insert_one(user)
 
 
-def viewBallence(ID):
+def viewBalance(ID):
     userObject = collection.find_one()
 
     if userObject["discordID"] == ID:
-        return userObject["ballence"]
+        return userObject["balance"]

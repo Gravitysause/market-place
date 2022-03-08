@@ -9,6 +9,7 @@ dotenv.load_dotenv()
 # Discord CLient Key
 token = os.getenv("token")
 
+
 # The Bot
 class MarketPlace(discord.Client):
     async def on_message(self, message):
@@ -27,13 +28,13 @@ class MarketPlace(discord.Client):
 
         # prints ballence
         elif message.content.startswith("$view"):
-            ballence = dataBase.viewBallence(message.author.id)
+            balance = dataBase.viewBalance(message.author.id)
 
-            if ballence == None:
+            if balance == None:
                 await message.channel.send(f"{message.author} doesn't have an account. \n to create an account, use $create")
 
             else: 
-                await message.channel.send(f"{message.author} has ${ballence}")
+                await message.channel.send(f"{message.author} has ${balance}")
 
 
 if __name__ == "__main__":
