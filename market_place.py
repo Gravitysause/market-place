@@ -2,7 +2,7 @@ import discord
 import os
 import dotenv
 
-import data_base
+from data_base import MongoClient as mc
 
 dotenv.load_dotenv()
 
@@ -12,34 +12,39 @@ token = os.getenv("token")
 
 # The Bot
 class MarketPlace(discord.Client):
-    async def on_message(self, message):
+    async def on_message(self, message):        
         # Prevents bot from responding to its self
         if message.author == self.user:
             return
 
+        # check if bot is on
         elif message.content.startswith("$running"):
             await message.channel.send("Yes")
 
         # creates account
-        elif message.content.startswith("$create"):
-            data_base.createAccount(message.author.id)
+        if message.content.startswith("$create"):
+            mc.createAccount(message.author.id)
 
             await message.channel.send(f"Creating an account for {message.author}")
 
-        # prints ballence
+        # prints balance
         elif message.content.startswith("$view"):
-            balance = data_base.viewBalance(message.author.id)
+            balance = mc.viewBalance(message.author.id)
+            
+            await message.channel.send(f"{message.author} has ${balance}")
 
-            if balance == None:
-                await message.channel.send(f"{message.author} doesn't have an account. \n to create an account, use $create")
+        # update balance
+        elif message.content.startswith("$update"):
+            balance = mc.viewBalance(message.author.id)
 
-            else: 
-                await message.channel.send(f"{message.author} has ${balance}")
+            mc.updateBalance(message.author.id, 40)
+            await message.channel.send(f"{message.author} has ${balance}")
 
 
-try:
-    discordClient = MarketPlace()
-    discordClient.run(token)
+if __name__ == "__main__":
+    try:
+        discordClient = MarketPlace()
+        discordClient.run(token)
 
-except:
-    print("Invalid Bot Token")
+    except:
+        print("Invalid Bot Token")
