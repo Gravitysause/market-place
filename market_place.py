@@ -2,7 +2,7 @@ import discord
 import os
 import dotenv
 
-from data_base import MongoClient as mc
+import data_base as mc
 
 dotenv.load_dotenv()
 
@@ -21,6 +21,9 @@ class MarketPlace(discord.Client):
         elif message.content.startswith("$running"):
             await message.channel.send("Yes")
 
+        elif message.content.startswith("$help"):
+            await message.channel.send("~Hello, I'm MarketPlace! \n hi")
+
         # creates account
         if message.content.startswith("$create"):
             mc.createAccount(message.author.id)
@@ -29,16 +32,19 @@ class MarketPlace(discord.Client):
 
         # prints balance
         elif message.content.startswith("$view"):
-            balance = mc.viewBalance(message.author.id)
-            
-            await message.channel.send(f"{message.author} has ${balance}")
+            try:
+                balance = mc.viewBalance(message.author.id)
+                
+                await message.channel.send(f"{message.author} has ${balance}")
+
+            except:
+                await message.channel.send(f"{message.author} has no account.\n To create an account, Type in $create")
 
         # update balance
         elif message.content.startswith("$update"):
-            balance = mc.viewBalance(message.author.id)
-
             mc.updateBalance(message.author.id, 40)
-            await message.channel.send(f"{message.author} has ${balance}")
+
+            await message.channel.send(f"updating {message.author}'s balance")
 
 
 if __name__ == "__main__":
