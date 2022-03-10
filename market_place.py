@@ -12,6 +12,15 @@ token = os.getenv("token")
 
 # The Bot
 class MarketPlace(discord.Client):
+    def getPrice(self, message):
+        newMessage = message.content.split()
+
+        try:
+            return int(newMessage[1])
+
+        except:
+            return 
+
     async def on_message(self, message):        
         # Prevents bot from responding to its self
         if message.author == self.user:
@@ -22,7 +31,7 @@ class MarketPlace(discord.Client):
             await message.channel.send("Yes")
 
         elif message.content.startswith("$help"):
-            await message.channel.send("~Hello, I'm MarketPlace! \n hi")
+            await message.channel.send("$running is used to check if I'm running \n$create is used to create an account \n$view is used to view your account balance \n$update is used to update your balance")
 
         # creates account
         if message.content.startswith("$create"):
@@ -42,9 +51,11 @@ class MarketPlace(discord.Client):
 
         # update balance
         elif message.content.startswith("$update"):
-            mc.updateBalance(message.author.id, 40)
+            print(f"{self.getPrice(message)} is a {type(self.getPrice(message))}")
 
-            await message.channel.send(f"updating {message.author}'s balance")
+            if type(self.getPrice(message)) == type(69):
+                mc.updateBalance(message.author.id, self.getPrice(message))
+                await message.channel.send(f"updating {message.author}'s balance")
 
 
 if __name__ == "__main__":
