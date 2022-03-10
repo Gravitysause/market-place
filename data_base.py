@@ -11,7 +11,7 @@ db = dataClient.users
 collection = db.userCollection
 
 
-def createAccount(ID):
+def createAccount(ID, name):
     """
     Creates an object on mongodb for the specified user
     Each new account will start with 100 dollars
@@ -19,6 +19,7 @@ def createAccount(ID):
 
     user = {
         "discordID": ID,
+        "username": name,
         "balance": 100
     }
     
@@ -36,3 +37,7 @@ def updateBalance(ID, added):
     newValues = {"$set": {"balance": userObject["balance"] + added}}
 
     collection.update_one(myQuery, newValues)
+
+
+def donateCash(amount, donator, reciever):
+    pass

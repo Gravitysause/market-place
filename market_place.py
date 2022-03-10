@@ -22,6 +22,11 @@ class MarketPlace(discord.Client):
             return 
 
     async def on_message(self, message):        
+
+        ####################
+        ## Debug Commands ##
+        ####################
+
         # Prevents bot from responding to its self
         if message.author == self.user:
             return
@@ -33,29 +38,45 @@ class MarketPlace(discord.Client):
         elif message.content.startswith("$help"):
             await message.channel.send("$running is used to check if I'm running \n$create is used to create an account \n$view is used to view your account balance \n$update is used to update your balance")
 
+
+        ##################
+        ## Bot Commands ##
+        ##################
+
         # creates account
+
+        # TODO check if user has account 
         if message.content.startswith("$create"):
-            mc.createAccount(message.author.id)
+            mc.createAccount(message.author.id, str(message.author))
 
             await message.channel.send(f"Creating an account for {message.author}")
 
-        # prints balance
-        elif message.content.startswith("$view"):
-            try:
-                balance = mc.viewBalance(message.author.id)
-                
-                await message.channel.send(f"{message.author} has ${balance}")
+        try:
+            # prints balance
+            if message.content.startswith("$view"):
+                    balance = mc.viewBalance(message.author.id)
+                    
+                    await message.channel.send(f"{message.author} has ${balance}")
 
-            except:
-                await message.channel.send(f"{message.author} has no account.\n To create an account, Type in $create")
+            # update balance
+            elif message.content.startswith("$update"):
+                if type(self.getPrice(message)) == type(69):
+                    mc.updateBalance(message.author.id, self.getPrice(message))
+                    await message.channel.send(f"updating {message.author}'s balance")
 
-        # update balance
-        elif message.content.startswith("$update"):
-            print(f"{self.getPrice(message)} is a {type(self.getPrice(message))}")
+            # donate cash to other user
+            elif message.content.startswith("$donate"):
+                pass
 
-            if type(self.getPrice(message)) == type(69):
-                mc.updateBalance(message.author.id, self.getPrice(message))
-                await message.channel.send(f"updating {message.author}'s balance")
+        except NameError:
+            await message.channel.send(f"{message.author} has no account.\nTo create an account, Type in $create")
+
+        except OverflowError:
+            if self.getPrice(message) < 0:
+                await message.channel.send(f"{self.getPrice(message)} is too low to update")
+
+            elif self.getPrice(message) > 0:
+                await message.channel.send(f"{self.getPrice(message)} is too high to update")
 
 
 if __name__ == "__main__":
